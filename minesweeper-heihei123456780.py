@@ -1,4 +1,4 @@
-#heihei123456780 2021/11/1
+#heihei123456780 2022/4/12
 #扫雷
 from random import randrange
 def normalized(minefield,rolnumber,colnumber):#初始化雷区
@@ -28,21 +28,21 @@ def display(minefield,rolnumber,colnumber):#显示雷区
     i,j=0,0
     for i in range (0,rolnumber+2):
         for j in range (0,colnumber+2):               
-               if (i==0 or j==0 )and not(i==0 and j==0)and(i<11 and j<11):
+               if (i==0 or j==0 )and not(i==0 and j==0)and(i<11 and j<11):#显示行列编号
                    print(i+j-1,"",end='|')
                elif (i==0 or j==0)and not(i==0 and j==0):
                    print(i+j-1,end='|')
                elif i==0 and j==0:
                    print("  ",end="|")
                else:
-                   if minefield[i][j][1]==0: 
+                   if minefield[i][j][1]==0: #显示未开挖地块
                        print(" ","",end='|')
                    elif minefield[i][j][1]==1:
-                       if minefield[i][j][0]!=9:
+                       if minefield[i][j][0]!=9:#显示数字
                            print(minefield[i][j][0],"",end='|')
                        else:
-                           print('*',"",end='|')
-                   elif minefield[i][j][1]==2:
+                           print('*',"",end='|')#显示雷
+                   elif minefield[i][j][1]==2:#显示标记
                        print('!',"",end='|')                     
                j=j+1
         else:
@@ -51,36 +51,36 @@ def display(minefield,rolnumber,colnumber):#显示雷区
 def dig(minefield,x,y,rolnumber,colnumber,first):#选择地块后的处理
     i,j=1,1
     global safe
-    if minefield[x][y][0]==9 and minefield[x][y][1]!=2 :
-        if first:
+    if minefield[x][y][0]==9 and minefield[x][y][1]!=2 :#触雷处理
+        if first:#防首次触雷保护
             minefield [x][y][0]=0
-            for i in range (0,rolnumber+2):
+            for i in range (0,rolnumber+2):#清除雷区全部数字
                 for j in range (0,colnumber+2):
                     if minefield [i][j][0]!=9:
                         minefield[i][j][0]=0
                     j=j+1
                 i=i+1
             generatemine(minefield,1,rolnumber,colnumber)
-            while minefield[x][y][0]==9:
+            while minefield[x][y][0]==9:#检查原位置是否生成雷
                 c=1
                 d=1
                 while minefield[c][d][0]!=9:
-                    c=random.randrange(1,rolnumber+2)
-                    d=random.randrange(1,rolnumber+2)
+                    c=randrange(1,rolnumber+2)
+                    d=randrange(1,rolnumber+2)
                 minefield[c][d][0]=0
                 generatemine(minefield,1,rolnumber,colnumber)        
-            check_neighbour_mine(minefield,rolnumber-1,colnumber-1)
+            check_neighbour_mine(minefield,rolnumber-1,colnumber-1)#重新生成雷区数字
             minefield[x][y][1]=1
         else:
-            for i in range (1,rolnumber+2):
+            for i in range (1,rolnumber+2):#揭示地雷分布
                 for j in range (1,colnumber+2):
                     minefield[i][j][1]=1
                     j=j+1
                 i=i+1
             safe=False
-    elif minefield[x][y][0]!=0 and minefield[x][y][1]!=2:
+    elif minefield[x][y][0]!=0 and minefield[x][y][1]!=2:#揭示单一地块
         minefield[x][y][1]=1
-    elif minefield[x][y][0]==0 and minefield[x][y][1]==0 and not (x==0 or y==0 or x+1>rolnumber+1 or y+1>rolnumber+1)and minefield[x][y][1]!=2:
+    elif minefield[x][y][0]==0 and minefield[x][y][1]==0 and not (x==0 or y==0 or x+1>rolnumber+1 or y+1>rolnumber+1)and minefield[x][y][1]!=2:#揭示3*3地块
         minefield[x][y][1]=1
         dig(minefield,x+1,y+1,rolnumber,colnumber,False)
         dig(minefield,x+1,y,rolnumber,colnumber,False)
@@ -90,10 +90,10 @@ def dig(minefield,x,y,rolnumber,colnumber,first):#选择地块后的处理
         dig(minefield,x-1,y+1,rolnumber,colnumber,False)
         dig(minefield,x-1,y,rolnumber,colnumber,False)
         dig(minefield,x-1,y+1,rolnumber,colnumber,False)
-def check(minefield,minenumber,rolnumber,colnumber,count):#检查是否打开所有没有雷的格子
+def check(minefield,minenumber,rolnumber,colnumber,count):#检查是否打开所有没有雷的地块
      i,j=1,1
      count=0
-     for i in range (1,rolnumber+2):
+     for i in range (1,rolnumber+2):#统计已发现雷数
         for j in range (1,colnumber+2):
             if minefield[i][j][1]==1:
                 count=count+1
@@ -157,16 +157,16 @@ while play=='y'or play=='r':
           except Exception:
                  c=input('请输入要操作的行数与列数，以及要进行的操作（1=开挖，2=标记，3=开挖以输入坐标点为中心3x3范围内未标记的点,4=清除标记,），用逗号分隔 ')
                  c=c.split(',')
-      if int(c[2])==1:
+      if int(c[2])==1:#开挖地块
           dig(minefield,int(c[0])+1,int(c[1])+1,int(a[0]),int(a[1]),first)
-      elif int(c[2])==2:
+      elif int(c[2])==2:#标记
           if minefield[int(c[0])+1][int(c[1])+1][1]==0:            
               minefield[int(c[0])+1][int(c[1])+1][1]=2
           else:
               print('不能标记已开挖或已标记的点')
-      elif int(c[2])==4:
+      elif int(c[2])==4:#清除标记
           minefield[int(c[0])+1][int(c[1])+1][1]=1
-      elif int(c[2])==3:
+      elif int(c[2])==3:#开挖3*3的地块
           dig(minefield,int(c[0])+1,int(c[0])+1,int(a[0]),int(a[1]),first)
           dig(minefield,int(c[0])+2,int(c[0])+2,int(a[0]),int(a[1]),False)
           dig(minefield,int(c[0])+2,int(c[0])+1,int(a[0]),int(a[1]),False)
